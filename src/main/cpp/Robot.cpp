@@ -14,6 +14,7 @@ public:
 
     void RobotInit() override {
 		// Publish a notification to the dashboard
+		g_dashboard.PutString("Drive Mode", "Tank");
 		g_dashboard.SendNotification(elastic::NotificationLevel::INFO, "Robot Init", "Robot has been initialized.");
     }
 
@@ -38,11 +39,9 @@ public:
 		// Publish joystick values to NetworkTables
 		g_dashboard.UpdateJoystick(leftX, leftY, rightX, rightY);
 
-        // Example control: Using tank drive with left and right Y values
-        m_drivetrain.TankDrive(leftY * maxSpeed, rightY * maxSpeed);
-
-        // Alternatively, you could use arcade drive:
-        // m_drivetrain.ArcadeDrive(leftY * maxSpeed, rightX);
+        g_dashboard.GetString("Drive Mode", "Tank") == "Tank" ?
+			m_drivetrain.TankDrive(leftY, rightY, maxSpeed) :
+			m_drivetrain.ArcadeDrive(leftY, rightX, maxSpeed);
     }
 
 private:

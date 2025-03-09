@@ -28,10 +28,16 @@ void Drivetrain::Periodic() {
     g_dashboard.PutNumber("Right Lead Motor Output", m_rightLeadMotor.GetAppliedOutput());
 }
 
-void Drivetrain::TankDrive(double leftSpeed, double rightSpeed) {
+void Drivetrain::TankDrive(double leftSpeed, double rightSpeed, double maxSpeed) {
+    leftSpeed = std::clamp(leftSpeed, -maxSpeed, maxSpeed);
+    rightSpeed = std::clamp(rightSpeed, -maxSpeed, maxSpeed);
     m_drive.TankDrive(leftSpeed, rightSpeed);
 }
 
-void Drivetrain::ArcadeDrive(double forward, double rotation) {
+void Drivetrain::ArcadeDrive(double leftSpeed, double rightSpeed, double maxSpeed) {
+    double forward = (leftSpeed + rightSpeed) / 2.0;
+    double rotation = (leftSpeed - rightSpeed) / 2.0;
+    double forward = std::clamp(forward, -maxSpeed, maxSpeed);
+    double rotation = std::clamp(rotation, -maxSpeed, maxSpeed);
     m_drive.ArcadeDrive(forward, rotation);
 }

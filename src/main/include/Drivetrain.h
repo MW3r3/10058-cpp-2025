@@ -26,7 +26,7 @@ public:
      * @param leftSpeed  The speed for the left side.
      * @param rightSpeed The speed for the right side.
      */
-    void TankDrive(double leftSpeed, double rightSpeed);
+    void TankDrive(double leftSpeed, double rightSpeed, double maxSpeed);
 
     /**
      * Drives the robot using arcade drive control.
@@ -34,7 +34,7 @@ public:
      * @param forward  The forward speed command.
      * @param rotation The rotation command.
      */
-    void ArcadeDrive(double forward, double rotation);
+    void ArcadeDrive(double forward, double rotation, double maxSpeed);
 
 private:
     // Left side motors (using Talon controllers)
