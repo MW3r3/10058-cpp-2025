@@ -28,9 +28,19 @@ void Drivetrain::Periodic() {
     g_dashboard.PutNumber("Right Lead Motor Output", m_rightLeadMotor.GetAppliedOutput());
 }
 
-void Drivetrain::TankDrive(double leftSpeed, double rightSpeed, double maxSpeed) {
+void Drivetrain::AssistedTankDrive(double leftSpeed, double rightSpeed, double maxSpeed, double tolerance) {
+    // Clamp speeds to the maximum speed
     leftSpeed = std::clamp(leftSpeed, -maxSpeed, maxSpeed);
     rightSpeed = std::clamp(rightSpeed, -maxSpeed, maxSpeed);
+
+    // If the difference between left and right speeds is less than the tolerance,
+    // set both speeds to the average, allowing for straighter driving.
+    if (std::abs(leftSpeed - rightSpeed) < tolerance) {
+        double avgSpeed = (leftSpeed + rightSpeed) / 2.0;
+        leftSpeed = avgSpeed;
+        rightSpeed = avgSpeed;
+    }
+
     m_drive.TankDrive(leftSpeed, rightSpeed);
 }
 
@@ -41,3 +51,9 @@ void Drivetrain::ArcadeDrive(double leftSpeed, double rightSpeed, double maxSpee
     double rotation = std::clamp(rotation, -maxSpeed, maxSpeed);
     m_drive.ArcadeDrive(forward, rotation);
 }
+
+double Drivetrain::NonlinearMap(double input, double exponent) {
+    double sign = (input >= 0.0) ? 1.0 : -1.0;
+    return sign * std::pow(std::abs(input), exponent);
+}
+

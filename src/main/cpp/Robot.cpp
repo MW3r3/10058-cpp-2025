@@ -15,6 +15,8 @@ public:
     void RobotInit() override {
 		// Publish a notification to the dashboard
 		g_dashboard.PutString("Drive Mode", "Tank");
+		g_dashboard.PutNumber("Max Speed", 1.0);
+		g_dashboard.PutNumber("Tolerance", 0.1);
 		g_dashboard.SendNotification(elastic::NotificationLevel::INFO, "Robot Init", "Robot has been initialized.");
     }
 
@@ -28,20 +30,22 @@ public:
 	}
 
     void TeleopPeriodic() override {
-        double maxSpeed = frc::SmartDashboard::GetNumber("Max Speed", 1.0);
-
         // Get axis values using the XboxController methods
-        double leftX   = m_f310Controller.GetLeftX();
-        double leftY   = m_f310Controller.GetLeftY();
-        double rightX  = m_f310Controller.GetRightX();
-        double rightY  = m_f310Controller.GetRightY();
+        // Get raw joystick values
+		double leftY  = m_f310Controller.GetLeftY();
+		double rightY = m_f310Controller.GetRightY();
 
-		// Publish joystick values to NetworkTables
-		g_dashboard.UpdateJoystick(leftX, leftY, rightX, rightY);
+		// Apply nonlinear mapping; adjust the exponent as needed (e.g., 2.0 for quadratic mapping)
+		double mappedLeftY  = m_drivetrain.NonlinearMap(leftY, 2.0);
+		double mappedRightY = m_drivetrain.NonlinearMap(rightY, 2.0);
 
-        g_dashboard.GetString("Drive Mode", "Tank") == "Tank" ?
-			m_drivetrain.TankDrive(leftY, rightY, maxSpeed) :
-			m_drivetrain.ArcadeDrive(leftY, rightX, maxSpeed);
+		// Now use the mapped values for assisted tank drive:
+		double tolerance = g_dashboard.GetNumber("Tolerance", 0.1);
+		double maxSpeed = g_dashboard.GetNumber("Max Speed", 1.0);
+		
+		g_dashboard.GetString("Drive Mode", "Tank") == "Tank" ?
+			m_drivetrain.AssistedTankDrive(mappedLeftY, mappedRightY, maxSpeed, tolerance) :
+			m_drivetrain.ArcadeDrive(mappedLeftY, m_f310Controller.GetRightX(), maxSpeed);
     }
 
 private:

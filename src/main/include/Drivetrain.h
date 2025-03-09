@@ -26,7 +26,7 @@ public:
      * @param leftSpeed  The speed for the left side.
      * @param rightSpeed The speed for the right side.
      */
-    void TankDrive(double leftSpeed, double rightSpeed, double maxSpeed);
+    void AssistedTankDrive(double leftSpeed, double rightSpeed, double maxSpeed, double tolerance);
 
     /**
      * Drives the robot using arcade drive control.
@@ -35,6 +35,8 @@ public:
      * @param rotation The rotation command.
      */
     void ArcadeDrive(double forward, double rotation, double maxSpeed);
+
+    double NonlinearMap(double input, double exponent);
 
 private:
     // Left side motors (using Talon controllers)
@@ -51,4 +53,6 @@ private:
 
     // Differential drive to control the robot's movement
     frc::DifferentialDrive m_drive{m_leftMotors, m_rightMotors};
+
+    
 };
