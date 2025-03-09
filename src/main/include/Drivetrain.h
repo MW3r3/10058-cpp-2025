@@ -46,8 +46,8 @@ private:
     rev::spark::SparkMax m_rightFollowMotor{13, rev::spark::SparkMax::MotorType::kBrushed};
 
     // Grouping motors on each side (ensure left motors use left controllers, etc.)
-    frc::MotorControllerGroup m_leftMotors{m_leftLeadMotor, m_leftFollowMotor};
-    frc::MotorControllerGroup m_rightMotors{m_rightLeadMotor, m_rightFollowMotor};
+    frc::MotorControllerGroup m_leftMotors{m_rightLeadMotor, m_rightFollowMotor};
+    frc::MotorControllerGroup m_rightMotors{m_leftLeadMotor, m_leftFollowMotor};
 
     // Differential drive to control the robot's movement
     frc::DifferentialDrive m_drive{m_leftMotors, m_rightMotors};

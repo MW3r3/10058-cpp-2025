@@ -12,7 +12,6 @@ Drivetrain::Drivetrain() {
     rev::spark::SparkMaxConfig RightFollowerConfig;
 
     // Invert the leader and set the follower to follow the leader
-    RightLeaderConfig.Apply(GlobalConfig).Inverted(true);
     RightFollowerConfig.Apply(GlobalConfig).Follow(m_rightLeadMotor);
 
     // Apply configurations to the SparkMax controllers
