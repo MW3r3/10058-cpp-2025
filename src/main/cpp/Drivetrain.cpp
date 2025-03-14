@@ -5,7 +5,7 @@ Drivetrain::Drivetrain() {
 
     // Global configuration: set a smart current limit and use brake mode
     rev::spark::SparkMaxConfig GlobalConfig;
-    GlobalConfig.SmartCurrentLimit(50).SetIdleMode(rev::spark::SparkMaxConfig::IdleMode::kBrake);
+    GlobalConfig.SmartCurrentLimit(50).SetIdleMode(rev::spark::SparkMaxConfig::IdleMode::kCoast);
 
     // Create individual configurations for the right side motors
     rev::spark::SparkMaxConfig RightLeaderConfig;
@@ -47,8 +47,8 @@ void Drivetrain::AssistedTankDrive(double leftSpeed, double rightSpeed, double m
 void Drivetrain::ArcadeDrive(double leftSpeed, double rightSpeed, double maxSpeed) {
     double forward = (leftSpeed + rightSpeed) / 2.0;
     double rotation = (leftSpeed - rightSpeed) / 2.0;
-    double forward = std::clamp(forward, -maxSpeed, maxSpeed);
-    double rotation = std::clamp(rotation, -maxSpeed, maxSpeed);
+    forward = std::clamp(forward, -maxSpeed, maxSpeed); 
+    rotation = std::clamp(rotation, -maxSpeed, maxSpeed);
     m_drive.ArcadeDrive(forward, rotation);
 }
 

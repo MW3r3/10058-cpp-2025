@@ -3,8 +3,6 @@
 #include <frc/XboxController.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 #include "Drivetrain.h"
-#include "Elevator.h"
-#include "Dashboard.h"
 #include "DashboardSingleton.h"
 
 class Robot : public frc::TimedRobot {
@@ -42,15 +40,15 @@ public:
 		// Now use the mapped values for assisted tank drive:
 		double tolerance = g_dashboard.GetNumber("Tolerance", 0.1);
 		double maxSpeed = g_dashboard.GetNumber("Max Speed", 1.0);
-		
+
 		g_dashboard.GetString("Drive Mode", "Tank") == "Tank" ?
 			m_drivetrain.AssistedTankDrive(mappedLeftY, mappedRightY, maxSpeed, tolerance) :
 			m_drivetrain.ArcadeDrive(mappedLeftY, m_f310Controller.GetRightX(), maxSpeed);
+
     }
 
 private:
     Drivetrain m_drivetrain;
-    Elevator m_elevator;
 };
 
 #ifndef RUNNING_FRC_TESTS
